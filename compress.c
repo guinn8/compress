@@ -18,12 +18,29 @@
  * @return The size data compressed in the buffer, 0 on fail.
  *
  */
-size_t byte_compress(uint8_t *data_ptr, size_t data_size){
+size_t byte_compress(uint8_t * const data_ptr, const size_t data_size){
     if(data_ptr == NULL) {
         return 0;
     }
+    
+    size_t run_start=0, run_end=0;
+    while(run_end < data_size){
+        printf("%d\n\r", data_ptr[run_end]);
+        while(run_end < data_size && data_ptr[run_end] == data_ptr[run_end + 1]){
+            run_end++;
+            printf("run of literal %d of size: %ld\n\r", data_ptr[run_end], run_end-run_start+1);
+        }
 
-    printf("first byte = %d\n\r", data_ptr[0]);
+        run_end++;
+        run_start = run_end;
+
+        // so a big problem we could run into is our RLE over running the in-place buffer like many encoding schemes this is an edge case
+
+        // so we can get around that by being clever, singleton numbers will be encoded as a normal 7 bit int. 
+        // so in the works case where we dont have any runs at all we are not overrunning our buffer
+        // but if we have a run we flip bit 8, this will signal that the following byte is a length multiplier
+
+    }
 
     return 0;
 }
