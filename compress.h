@@ -1,10 +1,5 @@
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <stdio.h>
-
-#include "compress.h"
-
 
 /**
  * @brief Compresses the data in the provided buffer in-place.
@@ -15,7 +10,7 @@
  *                          After compression, this buffer will contain the compressed data.
  * @param[in] data_size     The number of bytes in the buffer to compress.
  * 
- * @return The size data compressed in the buffer, 0 on fail.
+ * @return The size data compressed in the buffer.
  *
  */
 size_t byte_compress(uint8_t *data_ptr, size_t data_size);
@@ -32,19 +27,3 @@ size_t byte_compress(uint8_t *data_ptr, size_t data_size);
  *
  */
 size_t byte_decompress(const uint8_t *src_ptr, size_t compressed_size, uint8_t *dest_ptr, size_t dest_capacity);
-
-
-size_t byte_compress(uint8_t *data_ptr, size_t data_size){
-    if(data_ptr == NULL) {
-        return 0;
-    }
-
-    printf("first byte = %d\n\r", data_ptr[0]);
-
-    return 0;
-}
-
-size_t byte_decompress(const uint8_t *src_ptr, size_t compressed_size, uint8_t *dest_ptr, size_t dest_capacity){
-    return 0;
-}
-
