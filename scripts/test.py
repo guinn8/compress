@@ -1,15 +1,15 @@
 import ctypes
-from script.decompress import byte_decompress
+from decompress import byte_decompress
 
-LIBRARY_PATH = "./bin/libcompress.so"  # Path to the shared library
+LIBRARY_PATH = "./libcompress.so"  # Path to the shared library
 lib = ctypes.CDLL(LIBRARY_PATH)  # Load the shared library
 
 # Define the function argument and return types
 lib.byte_compress.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_size_t]
 lib.byte_compress.restype = ctypes.c_size_t
 
-
 TEST_CASES = [
+    ("Single number", [42], True),
     ("Large input", [42] * 10000, True),
     ("Repeated runs", [10]*100 + [20]*100 + [10]*100 + [20]*100, True),
     ("Long alternating runs", [10]*100 + [20]*100 + [10]*100 + [20]*100, True),
@@ -30,6 +30,10 @@ TEST_CASES = [
     ("Runs & unique", [10, 10, 20, 30, 30, 30, 40, 50], True),
     ("Random reps", [10, 10, 20, 20, 30, 30, 40, 40, 50, 50], True),
     ("Unique values", list(range(1, 101)), True),
+    ("Empty", [], True),
+    ("Out of range", [128], False),
+    ("Out of range", [256], False),
+    ("Just out of range", list(range(0, 129)), False),
 ]
 
 def run_compress(input_data):
@@ -64,8 +68,8 @@ def run_tests():
                 f"Expected: {input_data}"
             )
 
-            compression_ratio = len(compressed_data) / len(input_data) if input_data else 0
-            print(f"PASSED: Test {i} - Compression ratio: {compression_ratio:.2f} - ({description})")
+            compression_ratio = 1 - len(compressed_data) / len(input_data) if input_data else 0
+            print(f"PASSED: Test {i} - Compression percent: {compression_ratio:.2f} - ({description})")
             passed += 1
 
         except Exception as e:
