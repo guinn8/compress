@@ -4,13 +4,9 @@
 
 #include "compress.h"
 
-#define DEFAULT_BUFFER_LEN 1024
-
-
-
 int main(void) {
     size_t index = 0;
-    size_t buf_len = DEFAULT_BUFFER_LEN;
+    size_t buf_len = 1024;
     uint8_t *buffer = malloc(buf_len);
     if(buffer == NULL) {
         return EXIT_FAILURE;
@@ -49,15 +45,13 @@ int main(void) {
 
     size_t compressed_size =  byte_compress(buffer, index);
 
-    printf("comressed size = %ld\n", compressed_size);
-    for (size_t i = 0; i < compressed_size; i++)
-    {
-        printf("%d,", buffer[i]); 
+    for (size_t i = 0; i < compressed_size; i++) {
+        printf("%d", buffer[i]);
+        if (i < compressed_size - 1) {
+            printf(", ");
+        }
     }
-    printf("\n\r");
-    
-
-
+    printf("\n");
 
     free(buffer);
     return EXIT_SUCCESS;

@@ -14,16 +14,3 @@
  *
  */
 size_t byte_compress(uint8_t *data_ptr, size_t data_size);
-
-/**
- * @brief Decompresses the data from a source buffer into a destination buffer.
- *
- * @param[in] src_ptr Pointer to the buffer containing the compressed data.
- * @param[in] compressed_size Number of compressed bytes.
- * @param[out] dest_ptr Pointer to the buffer where the decompressed data will be written.
- * @param[in] dest_capacity Size of the destination, large enough to accommodate the decompression.
- *
- * @return The size of the decompressed data, or 0 on fail.
- *
- */
-size_t byte_decompress(const uint8_t *src_ptr, size_t compressed_size, uint8_t *dest_ptr, size_t dest_capacity);
