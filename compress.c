@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <limits.h>
-#include "compress.h"
 
 /**
  * @brief Compresses the data in the provided buffer in-place.
