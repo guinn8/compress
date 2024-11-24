@@ -47,7 +47,17 @@ int main(void) {
         buffer[index++] = (uint8_t)value;
     }
 
-    byte_compress(buffer, index);
+    size_t compressed_size =  byte_compress(buffer, index);
+
+    printf("comressed size = %ld\n", compressed_size);
+    for (size_t i = 0; i < compressed_size; i++)
+    {
+        printf("%d,", buffer[i]); 
+    }
+    printf("\n\r");
+    
+
+
 
     free(buffer);
     return EXIT_SUCCESS;

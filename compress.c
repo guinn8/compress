@@ -29,23 +29,47 @@ size_t byte_compress(uint8_t * const data_ptr, const size_t data_size){
         return 0;
     }
     
-    size_t run_end = 0;
+    
+    size_t run_end = 0, compression_end = 0;
     while(run_end < data_size){
         uint8_t test_literal;
-        size_t run_len; 
         size_t run_start = run_end;
         do {
             test_literal = data_ptr[run_end];
-            run_len = run_end - run_start + 1;
-            printf("literal: %d run_len: %ld run_start: %ld, run_end:%ld\n\r", test_literal, run_len, run_start, run_end);
-        } while(run_end++ && 
-                run_end < data_size &&
+            assert(test_literal >=0 && test_literal < 128);
+            printf("literal: %d run_len: %ld run_start: %ld, run_end:%ld\n\r", test_literal, run_end - run_start + 1, run_start, run_end);
+        } while(++run_end < data_size &&
                 test_literal == data_ptr[run_end]);
 
+        printf("run_end %ld data_size %ld\n", run_end, data_size);
+        if(run_end - 1 == run_start) {
+            data_ptr[compression_end] = test_literal;
+            compression_end++;
+
+
+
+        } else {
+            // so at this point I have the bounds of a run captured
+            // so we need to collapse these bounds into a tuple where
+            // - we need to set the high bit of the run_start
+            // - we need to set run_start + 1 to the multiplier
+            // but this complecates matter because we need to compress in place
+            // so we need to track an index of the end of compressed data
+            // we do have a strict gaurentee that end of compressed data < run_start
+
+
+        }
     }
 
-    return 0;
+    return compression_end;
 }
+
+/**
+ * [D]
+ * 
+ * 
+ * 
+ */
 
 /**
  * @brief Decompresses the data from a source buffer into a destination buffer.
