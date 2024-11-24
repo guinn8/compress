@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
-// #include "compress.h"
+#include <limits.h>
+#include "compress.h"
 
 /**
  * @brief Compresses the data in the provided buffer in-place.
@@ -30,7 +31,8 @@ size_t byte_compress(uint8_t * const data_ptr, const size_t data_size){
             }
             run_len = run_end - run_start + 1;
         } while(++run_end < data_size &&
-                test_literal == data_ptr[run_end]);
+                test_literal == data_ptr[run_end] &&
+                run_len < UINT8_MAX);
 
         if (run_len == 1) {
             data_ptr[compression_end++] = test_literal & 0x7F; // Store 7 bit literal
