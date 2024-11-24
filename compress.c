@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-
+#include <assert.h>
 #include "compress.h"
 
 
@@ -25,13 +25,16 @@ size_t byte_compress(uint8_t * const data_ptr, const size_t data_size){
     
     size_t run_start=0, run_end=0;
     while(run_end < data_size){
-        printf("%d\n\r", data_ptr[run_end]);
-        while(run_end < data_size && data_ptr[run_end] == data_ptr[run_end + 1]){
-            run_end++;
-            printf("run of literal %d of size: %ld\n\r", data_ptr[run_end], run_end-run_start+1);
-        }
+        uint8_t test_literal;
+        size_t run_len; 
+        do {
+            test_literal = data_ptr[run_end];
+            run_len = run_end - run_start + 1;
+            printf("literal: %d run_len: %ld run_start: %ld, run_end:%ld\n\r", test_literal, run_len, run_start, run_end);
+        } while(run_end++ && 
+                run_end < data_size &&
+                test_literal == data_ptr[run_end]);
 
-        run_end++;
         run_start = run_end;
 
         // so a big problem we could run into is our RLE over running the in-place buffer like many encoding schemes this is an edge case
