@@ -9,7 +9,9 @@ lib.byte_compress.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_size_t]
 lib.byte_compress.restype = ctypes.c_size_t
 
 TEST_CASES = [
+    ("Given example", [0x03, 0x74, 0x04, 0x04, 0x04, 0x35, 0x35, 0x64, 0x64, 0x64, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x56, 0x45, 0x56, 0x56, 0x56, 0x09, 0x09, 0x09], True),
     ("Single number", [42], True),
+    ("Small run", [10]*3, True),
     ("Large input", [42] * 10000, True),
     ("Repeated runs", [10]*100 + [20]*100 + [10]*100 + [20]*100, True),
     ("Long alternating runs", [10]*100 + [20]*100 + [10]*100 + [20]*100, True),
