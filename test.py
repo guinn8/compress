@@ -1,5 +1,4 @@
 import ctypes
-from decompress import byte_decompress
 
 LIBRARY_PATH = "./libcompress.so"  # Path to the shared library
 lib = ctypes.CDLL(LIBRARY_PATH)  # Load the shared library
@@ -53,6 +52,20 @@ def run_compress(input_data):
     
     compressed_data = [buffer[i] for i in range(compressed_size)]  # Extract compressed data from buffer
     return compressed_data
+
+def byte_decompress(compressed_data):
+    def decompress_generator(data):
+        it = iter(data)
+        for byte in it:
+            if byte & 0x80:  # High bit set, it's a run
+                literal = byte & 0x7F  # Extract the 7-bit literal
+                run_length = next(it)  # Get the run length
+                yield from [literal] * run_length
+            else:  # Single literal
+                yield byte
+
+    return list(decompress_generator(compressed_data))
+
 
 def run_tests():
     passed = 0
