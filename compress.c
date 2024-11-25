@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <assert.h>
 
 /**
  * @brief Compresses data in-place using a customized Run-Length Encoding (RLE) algorithm.
@@ -24,36 +25,37 @@
  *   - First Byte: Literal value with the MSB set.
  *   - Second Byte: Run length (2–255).
  *
- * @param[in,out] data_ptr Pointer to the data buffer to be compressed.
- * @param[in] data_size Size of the data buffer in bytes.
+ * @param[in,out] data Pointer to the data buffer to be compressed.
+ * @param[in] data_len Size of the data buffer in bytes.
  * @return Size of the compressed data in bytes, or 0 on error.
  */
-size_t byte_compress(uint8_t * const data_ptr, const size_t data_size){
-    if(data_ptr == NULL) {
+size_t byte_compress(uint8_t * const data, const size_t data_len){
+    if(data == NULL) {
         return 0;
     }
     
-    size_t run_end = 0, compression_end = 0;
-    while(run_end < data_size){
-        uint8_t test_literal, run_len;
-        size_t run_start = run_end;
+    size_t read_index = 0, compress_index = 0;
+    while(read_index < data_len){
+        uint8_t test_literal, run_length;
+        size_t start_index = read_index;
         do {
-            test_literal = data_ptr[run_end];
+            test_literal = data[read_index];
             if(test_literal >= 0x80){
-                return 0; // Value out of range
+                return 0;
             }
-            run_len = run_end - run_start + 1;
-        } while(++run_end < data_size &&
-                test_literal == data_ptr[run_end] &&
-                run_len <= UINT8_MAX);
+            run_length = read_index - start_index + 1;
+        } while(++read_index < data_len &&
+                test_literal == data[read_index] &&
+                run_length < UINT8_MAX);
 
-        if (run_len == 1) {
-            data_ptr[compression_end++] = test_literal; // Literal in range [0x00, 0x7F]
+        if (run_length == 1) {
+            assert((test_literal & 0x80) == 0); // Demonstrate that the MSB is 0.
+            data[compress_index++] = test_literal; // Store 7 bit literal.
         } else {
-            data_ptr[compression_end++] = test_literal | 0x80; // It's a run! MSB set. 
-            data_ptr[compression_end++] = (uint8_t)run_len; // Run length (2–255)
+            data[compress_index++] = test_literal | 0x80; // Its a run! Set the MSB.
+            data[compress_index++] = run_length; // Store the multiplier.
         }
     }
 
-    return compression_end;
+    return compress_index;
 }
